@@ -1,0 +1,13 @@
+apt-get remove python-pip
+apt-get remove python3-pip
+apt-get install python3-dev
+
+easy_install3 -U pip
+pip3 install googlefinance.client
+pip3 install pandas-datareader
+
+apt-get install libfreetype6-dev
+apt-get install libpng12-dev
+pip3 install matplotlib
+
+pip3 install telegram-send
