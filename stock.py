@@ -14,11 +14,11 @@ import subprocess
 
 def getTrendStr(current, average):
     if (current > average):
-        return "+++"
+        return u'\u2191'
     elif (current < average):
-        return "---"
+        return u'\u2193'
     else:
-        return "==="
+        return u'\u2194'
 
 
 # Read IBEX data from Yahoo Finance
