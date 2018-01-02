@@ -10,6 +10,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import subprocess
+import time
 
 
 def getTrendStr(current, average):
@@ -25,9 +26,10 @@ def getTrendStr(current, average):
 # NOTE! Retrying, because sometimes it fails
 for retry in range(1, 6):
     try:
-        stock = DataReader('^IBEX',  'yahoo', datetime(2005, 1, 1), datetime.today())
+        stock = DataReader('^IBEX',  'yahoo', datetime(2005, 1, 1), datetime.today(), retry_count=10)
     except:
         print("RETRY #%d - Error reading from Yahoo Finance" % (retry))
+        time.sleep(3)
         continue
     break
 
