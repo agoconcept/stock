@@ -35,17 +35,17 @@ for retry in range(1, 6):
 
 
 # Build DataFrame from rolling averages
-rolling_5d = pd.rolling_mean(stock['Adj Close'], 5, min_periods=1)
-rolling_20d = pd.rolling_mean(stock['Adj Close'], 20, min_periods=1)
-rolling_60d = pd.rolling_mean(stock['Adj Close'], 60, min_periods=1)
-rolling_250d = pd.rolling_mean(stock['Adj Close'], 250, min_periods=1)
+rolling_5d = pd.rolling_mean(stock['Close'], 5, min_periods=1)
+rolling_20d = pd.rolling_mean(stock['Close'], 20, min_periods=1)
+rolling_60d = pd.rolling_mean(stock['Close'], 60, min_periods=1)
+rolling_250d = pd.rolling_mean(stock['Close'], 250, min_periods=1)
 
 rolling_averages = pd.DataFrame({
-    '1D (D)': stock['Adj Close'][:-2],
-    '5D (W)': rolling_5d[:-2],
-    '20D (M)': rolling_20d[:-2],
-    '60D (Q)': rolling_60d[:-2],
-    '250D (Y)': rolling_250d[:-2]
+    '1D (D)': stock['Close'],
+    '5D (W)': rolling_5d,
+    '20D (M)': rolling_20d,
+    '60D (Q)': rolling_60d,
+    '250D (Y)': rolling_250d
     },
     columns=['1D (D)', '5D (W)', '20D (M)', '60D (Q)', '250D (Y)'])
 
@@ -76,13 +76,13 @@ plt.close()
 
 
 # Send info to telegram bot
-formatted_date = datetime.today().strftime("%Y-%m-%d")
+formatted_date = stock.index[-1:][0].strftime("%Y-%m-%d")
 subprocess.call("telegram-send -- '*********'", shell=True)
 subprocess.call("telegram-send -- 'ANALYSIS: %s'" % (formatted_date), shell=True)
 
 
-prev_close = stock['Adj Close'][-3]
-last_close = stock['Adj Close'][-2]
+prev_close = stock['Close'][-2]
+last_close = stock['Close'][-1]
 diff_abs = last_close-prev_close
 diff_pct = 100.0 * (last_close-prev_close) / prev_close
 
@@ -92,29 +92,28 @@ if (diff_abs > 0.0):
 else:
     subprocess.call("telegram-send -- 'Diff: %.2f (%.2f%%)'" % (diff_abs, diff_pct), shell=True)
 
-open_val = stock['Open'][-2]
-high_val = stock['High'][-2]
-low_val = stock['Low'][-2]
-vol_val = stock['Volume'][-2]
+open_val = stock['Open'][-1]
+high_val = stock['High'][-1]
+low_val = stock['Low'][-1]
+vol_val = stock['Volume'][-1]
 
 subprocess.call("telegram-send -- 'Op: %.2f'" % (open_val), shell=True)
-subprocess.call("telegram-send -- 'Hi: %.2f'" % (high_val), shell=True)
-subprocess.call("telegram-send -- 'Lo: %.2f'" % (low_val), shell=True)
-subprocess.call("telegram-send -- 'Volume: %.1f'" % (vol_val), shell=True)
+subprocess.call("telegram-send -- 'Range: %.2f - %.2f'" % (low_val, high_val), shell=True)
+subprocess.call("telegram-send -- 'Volume: %.3fB'" % (vol_val/1000000.0), shell=True)
 
 subprocess.call("telegram-send -- '---'" % (last_close), shell=True)
 
-trend = getTrendStr(last_close, rolling_5d[-2])
-subprocess.call("telegram-send -- '5d avg: %.2f (%s)'" % (rolling_5d[-2], trend), shell=True)
+trend = getTrendStr(last_close, rolling_5d[-1])
+subprocess.call("telegram-send -- '5d avg: %.2f (%s)'" % (rolling_5d[-1], trend), shell=True)
 
-trend = getTrendStr(last_close, rolling_20d[-2])
-subprocess.call("telegram-send -- '20d avg: %.2f (%s)'" % (rolling_20d[-2], trend), shell=True)
+trend = getTrendStr(last_close, rolling_20d[-1])
+subprocess.call("telegram-send -- '20d avg: %.2f (%s)'" % (rolling_20d[-1], trend), shell=True)
 
-trend = getTrendStr(last_close, rolling_60d[-2])
-subprocess.call("telegram-send -- '60d avg: %.2f (%s)'" % (rolling_60d[-2], trend), shell=True)
+trend = getTrendStr(last_close, rolling_60d[-1])
+subprocess.call("telegram-send -- '60d avg: %.2f (%s)'" % (rolling_60d[-1], trend), shell=True)
 
-trend = getTrendStr(last_close, rolling_250d[-2])
-subprocess.call("telegram-send -- '250d avg: %.2f (%s)'" % (rolling_250d[-2], trend), shell=True)
+trend = getTrendStr(last_close, rolling_250d[-1])
+subprocess.call("telegram-send -- '250d avg: %.2f (%s)'" % (rolling_250d[-1], trend), shell=True)
 
 subprocess.call("telegram-send -- '---'" % (last_close), shell=True)
 
