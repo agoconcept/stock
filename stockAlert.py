@@ -5,7 +5,7 @@ from datetime import datetime, date, time, timedelta
 import subprocess
 from time import sleep
 
-THRESHOLD = 1.0     # Percentage
+THRESHOLD = 0.5     # Percentage
 
 # Only execute between 9:00 and 18:00
 if not datetime.now().hour in range(9, 18):
