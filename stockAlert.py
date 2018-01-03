@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 
 from pandas_datareader import DataReader
-from datetime import datetime, date, time, timedelta
+from datetime import datetime, date, timedelta
 import subprocess
 from time import sleep
 
-THRESHOLD = 0.5     # Percentage
+THRESHOLD = 0.5     # In percentage
 
-# Only execute between 9:00 and 18:00
-if not datetime.now().hour in range(9, 18):
+# Only execute between 8:00 and 18:00
+if not datetime.now().hour in range(8, 18):
     exit(1)
 
 # Read IBEX data from Yahoo Finance
@@ -32,11 +32,6 @@ perc_var = 100.0 * delta / prev_val
 if abs(perc_var) >= THRESHOLD:
 
     # Send message
-    subprocess.call("telegram-send -- 'NOTE!!!'", shell=True)
-    subprocess.call("telegram-send -- 'Current: %.2f'" % (curr_val), shell=True)
-
-    if delta > 0.0:
-        subprocess.call("telegram-send -- '+%.2f (+%.2f%%)'" % (delta, perc_var), shell=True)
-    else:
-        subprocess.call("telegram-send -- '%.2f (%.2f%%)'" % (delta, perc_var), shell=True)
+    message = "!!! C: %.2f (%+.2f / %+.2f%%)" % (curr_val, delta, perc_var)
+    subprocess.call("telegram-send -- '%s'" % (message), shell=True)
 
