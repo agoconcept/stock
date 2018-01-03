@@ -87,17 +87,14 @@ diff_abs = last_close-prev_close
 diff_pct = 100.0 * (last_close-prev_close) / prev_close
 
 subprocess.call("telegram-send -- 'Close: %.2f'" % (last_close), shell=True)
-if (diff_abs > 0.0):
-    subprocess.call("telegram-send -- 'Diff: +%.2f (+%.2f%%)'" % (diff_abs, diff_pct), shell=True)
-else:
-    subprocess.call("telegram-send -- 'Diff: %.2f (%.2f%%)'" % (diff_abs, diff_pct), shell=True)
+subprocess.call("telegram-send -- 'Diff: %+.2f (%+.2f%%)'" % (diff_abs, diff_pct), shell=True)
 
 open_val = stock['Open'][-1]
 high_val = stock['High'][-1]
 low_val = stock['Low'][-1]
 vol_val = stock['Volume'][-1]
 
-subprocess.call("telegram-send -- 'Op: %.2f'" % (open_val), shell=True)
+subprocess.call("telegram-send -- 'Pre: %.2f - Op: %.2f'" % (prev_close, open_val), shell=True)
 subprocess.call("telegram-send -- 'Range: %.2f - %.2f'" % (low_val, high_val), shell=True)
 subprocess.call("telegram-send -- 'Volume: %.3fB'" % (vol_val/1000000.0), shell=True)
 
