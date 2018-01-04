@@ -24,8 +24,8 @@ for retry in range(1, 6):
 
 
 # Check if change is over a threshold compared to previous day
-curr_val = stock['Close'][1]
-prev_val = stock['Close'][0]
+curr_val = stock['Close'][-1]
+prev_val = stock['Close'][-2]
 delta = curr_val - prev_val
 perc_var = 100.0 * delta / prev_val
 
