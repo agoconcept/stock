@@ -136,7 +136,6 @@ Volume: %.3fB
 250d avg: %.2f (%s)
 ---
 10 day streak: %s
----
 """ % (
         formatted_date,
         last_close,
