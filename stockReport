@@ -13,13 +13,32 @@ import subprocess
 import time
 
 
+# Constants
+UP_CHAR = u'\u2191'
+DN_CHAR = u'\u2193'
+EQ_CHAR = u'\u2194'
+
+
 def getTrendStr(current, average):
     if (current > average):
-        return u'\u2191'
+        return UP_CHAR
     elif (current < average):
-        return u'\u2193'
+        return DN_CHAR
     else:
-        return u'\u2194'
+        return EQ_CHAR
+
+
+def getStreak(data):
+    ret = ""
+    for i in range(10):
+        if (data[-i] > data[-i-1]):
+            ret = UP_CHAR + ret
+        elif (data[-i] < data[-i-1]):
+            ret = DN_CHAR + ret
+        else:
+            ret = EQ_CHAR + ret
+
+    return ret
 
 
 # Read IBEX data from Yahoo Finance
@@ -49,6 +68,7 @@ rolling_averages = pd.DataFrame({
     },
     columns=['1D (D)', '5D (W)', '20D (M)', '60D (Q)', '250D (Y)'])
 
+
 # Generate figures
 plot_params = {
     'title': 'Rolling averages',
@@ -61,59 +81,82 @@ plot_params = {
 
 plt.figure(figsize=(32, 24), dpi=100)
 rolling_averages.plot(**plot_params)
-plt.savefig('image1.pdf', dpi=100)
+plt.savefig('stockMax.pdf', dpi=100)
+plt.close()
+
+plt.figure(figsize=(32, 24), dpi=100)
+rolling_averages[-750:].plot(**plot_params)
+plt.savefig('stock3Y.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 rolling_averages[-250:].plot(**plot_params)
-plt.savefig('image2.pdf', dpi=100)
+plt.savefig('stock1Y.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 rolling_averages[-60:].plot(**plot_params)
-plt.savefig('image3.pdf', dpi=100)
+plt.savefig('stock1Q.pdf', dpi=100)
 plt.close()
 
 
-# Send info to telegram bot
+# Prepare report
 formatted_date = stock.index[-1:][0].strftime("%Y-%m-%d")
-subprocess.call("telegram-send -- '*********'", shell=True)
-subprocess.call("telegram-send -- 'ANALYSIS: %s'" % (formatted_date), shell=True)
-
 
 prev_close = stock['Close'][-2]
 last_close = stock['Close'][-1]
 diff_abs = last_close-prev_close
 diff_pct = 100.0 * (last_close-prev_close) / prev_close
 
-subprocess.call("telegram-send -- 'Close: %.2f'" % (last_close), shell=True)
-subprocess.call("telegram-send -- 'Diff: %+.2f (%+.2f%%)'" % (diff_abs, diff_pct), shell=True)
-
 open_val = stock['Open'][-1]
 high_val = stock['High'][-1]
 low_val = stock['Low'][-1]
 vol_val = stock['Volume'][-1]
 
-subprocess.call("telegram-send -- 'Pre: %.2f - Op: %.2f'" % (prev_close, open_val), shell=True)
-subprocess.call("telegram-send -- 'Range: %.2f - %.2f'" % (low_val, high_val), shell=True)
-subprocess.call("telegram-send -- 'Volume: %.3fB'" % (vol_val/1000000.0), shell=True)
+trend5d = getTrendStr(last_close, rolling_5d[-1])
+trend20d = getTrendStr(last_close, rolling_20d[-1])
+trend60d = getTrendStr(last_close, rolling_60d[-1])
+trend250d = getTrendStr(last_close, rolling_250d[-1])
 
-subprocess.call("telegram-send -- '---'" % (last_close), shell=True)
+streak = getStreak(stock['Close'])
 
-trend = getTrendStr(last_close, rolling_5d[-1])
-subprocess.call("telegram-send -- '5d avg: %.2f (%s)'" % (rolling_5d[-1], trend), shell=True)
+info = """
+********************
+ANALYSIS: %s
+********************
+Close: %.2f
+Diff: %+.2f (%+.2f%%)
+Pre: %.2f - Op: %.2f
+Range: %.2f - %.2f
+Volume: %.3fB
+---
+5d avg: %.2f (%s)
+20d avg: %.2f (%s)
+60d avg: %.2f (%s)
+250d avg: %.2f (%s)
+---
+10 day streak: %s
+---
+""" % (
+        formatted_date,
+        last_close,
+        diff_abs, diff_pct,
+        prev_close, open_val,
+        low_val, high_val,
+        vol_val/1000000.0,
+        rolling_5d[-1], trend5d,
+        rolling_20d[-1], trend20d,
+        rolling_60d[-1], trend60d,
+        rolling_250d[-1], trend250d,
+        streak
+        )
 
-trend = getTrendStr(last_close, rolling_20d[-1])
-subprocess.call("telegram-send -- '20d avg: %.2f (%s)'" % (rolling_20d[-1], trend), shell=True)
 
-trend = getTrendStr(last_close, rolling_60d[-1])
-subprocess.call("telegram-send -- '60d avg: %.2f (%s)'" % (rolling_60d[-1], trend), shell=True)
+# Send data to telegram
+subprocess.call("telegram-send -- '%s'" % (info), shell=True)
 
-trend = getTrendStr(last_close, rolling_250d[-1])
-subprocess.call("telegram-send -- '250d avg: %.2f (%s)'" % (rolling_250d[-1], trend), shell=True)
+subprocess.call("telegram-send -f stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf", shell=True)
 
-subprocess.call("telegram-send -- '---'" % (last_close), shell=True)
 
-subprocess.call("telegram-send -f image1.pdf image2.pdf image3.pdf", shell=True)
-
-subprocess.call("rm image1.pdf image2.pdf image3.pdf", shell=True)
+# Clean up
+subprocess.call("rm stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf", shell=True)
