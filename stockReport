@@ -31,9 +31,9 @@ def getTrendStr(current, average):
 def getStreak(data):
     ret = ""
     for i in range(10):
-        if (data[-i] > data[-i-1]):
+        if (data[-i-1] > data[-i-2]):
             ret = UP_CHAR + ret
-        elif (data[-i] < data[-i-1]):
+        elif (data[-i-1] < data[-i-2]):
             ret = DN_CHAR + ret
         else:
             ret = EQ_CHAR + ret
