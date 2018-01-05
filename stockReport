@@ -41,6 +41,10 @@ def getStreak(data):
     return ret
 
 
+# Send initial message to telegram
+subprocess.call("telegram-send -- 'Collecting and analyzing data for IBEX35...'", shell=True)
+
+
 # Read IBEX data from Yahoo Finance
 # NOTE! Retrying, because sometimes it fails
 for retry in range(1, 6):
@@ -124,7 +128,7 @@ info = """
 ********************
 ANALYSIS: %s
 ********************
-Close: %.2f
+Current: %.2f
 Diff: %+.2f (%+.2f%%)
 Pre: %.2f - Op: %.2f
 Range: %.2f - %.2f
