@@ -122,6 +122,22 @@ trend20d = getTrendStr(last_close, rolling_20d[-1])
 trend60d = getTrendStr(last_close, rolling_60d[-1])
 trend250d = getTrendStr(last_close, rolling_250d[-1])
 
+min5d = min(stock['Low'][-5:])
+max5d = max(stock['High'][-5:])
+perc5d = 100.0 * (last_close - min5d) / (max5d - min5d)
+
+min20d = min(stock['Low'][-20:])
+max20d = max(stock['High'][-20:])
+perc20d = 100.0 * (last_close - min20d) / (max20d - min20d)
+
+min60d = min(stock['Low'][-60:])
+max60d = max(stock['High'][-60:])
+perc60d = 100.0 * (last_close - min60d) / (max60d - min60d)
+
+min250d = min(stock['Low'][-250:])
+max250d = max(stock['High'][-250:])
+perc250d = 100.0 * (last_close - min250d) / (max250d - min250d)
+
 streak = getStreak(stock['Close'])
 
 info = """
@@ -139,6 +155,11 @@ Volume: %.3fB
 60d avg: %.2f (%s)
 250d avg: %.2f (%s)
 ---
+5d range: %.2f - %.2f (%.2f%%)
+20d range: %.2f - %.2f (%.2f%%)
+60d range: %.2f - %.2f (%.2f%%)
+250d range: %.2f - %.2f (%.2f%%)
+---
 10 day streak: %s
 """ % (
         formatted_date,
@@ -151,6 +172,10 @@ Volume: %.3fB
         rolling_20d[-1], trend20d,
         rolling_60d[-1], trend60d,
         rolling_250d[-1], trend250d,
+        min5d, max5d, perc5d,
+        min20d, max20d, perc20d,
+        min60d, max60d, perc60d,
+        min250d, max250d, perc250d,
         streak
         )
 
