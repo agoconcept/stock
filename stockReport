@@ -119,13 +119,16 @@ stock['Buy Sell'] = (2*(np.sign(stock['Signal Line Crossover'] - stock['Signal L
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['MACD', 'Signal Line'], title='MACD & Signal Line')
-plt.savefig('macd.pdf', dpi=100)
+plt.axhline(y=0.0, color='b', linestyle='-')
+plt.savefig('macd1.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['Centerline Crossover', 'Buy Sell'], title='Signal Line & Centerline Crossovers', ylim=(-3,3))
-plt.savefig('buysell.pdf', dpi=100)
+plt.savefig('macd2.pdf', dpi=100)
 plt.close()
+
+subprocess.call("pdfunite macd1.pdf macd2.pdf macd.pdf", shell=True)
 
 
 # Prepare report
@@ -207,7 +210,7 @@ Volume: %.3fB
 # Send data to telegram
 subprocess.call("telegram-send -- '%s'" % (info), shell=True)
 
-subprocess.call("telegram-send -f stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf macd.pdf buysell.pdf", shell=True)
+subprocess.call("telegram-send -f stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf macd.pdf", shell=True)
 
 # Clean up
-subprocess.call("rm stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf macd.pdf buysell.pdf", shell=True)
+subprocess.call("rm stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf macd*.pdf", shell=True)
