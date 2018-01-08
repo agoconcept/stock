@@ -106,6 +106,7 @@ plt.close()
 
 
 # Calculate MACD for the latest 250 samples
+# Adapted from https://www.linkedin.com/pulse/python-tutorial-macd-signal-line-centerline-andrew-hamlet/
 stock['26 ema'] = pd.ewma(stock['Adj Close'], span=26)[-250:]
 stock['12 ema'] = pd.ewma(stock['Adj Close'], span=12)[-250:]
 stock['MACD'] = stock['12 ema'] - stock['26 ema']
