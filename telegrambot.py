@@ -60,9 +60,9 @@ def parse_all(updates):
     for update in updates["result"]:
         try:
             if (update["message"]["text"] == "/ibex"):
-                subprocess.call("./stockReport '^IBEX'", shell=True)
+                subprocess.call("./stockReport.py '^IBEX'", shell=True)
             elif (update["message"]["text"] == "/ericsson"):
-                subprocess.call("./stockReport 'ERIC-B.ST'", shell=True)
+                subprocess.call("./stockReport.py 'ERIC-B.ST'", shell=True)
             else:
                 text = update["message"]["text"]
                 chat = update["message"]["chat"]["id"]
