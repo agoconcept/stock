@@ -12,6 +12,7 @@ from matplotlib import cm
 import numpy as np
 import subprocess
 import time
+import sys
 
 
 # Constants
@@ -43,14 +44,14 @@ def getStreak(data):
 
 
 # Send initial message to telegram
-subprocess.call("telegram-send -- 'Collecting and analyzing data for IBEX35...'", shell=True)
+subprocess.call("telegram-send -- 'Collecting and analyzing data for %s...'" % (sys.argv[1]), shell=True)
 
 
 # Read IBEX data from Yahoo Finance
 # NOTE! Retrying, because sometimes it fails
 for retry in range(1, 6):
     try:
-        stock = DataReader('^IBEX',  'yahoo', datetime(2005, 1, 1), datetime.today(), retry_count=10)
+        stock = DataReader(sys.argv[1],  'yahoo', datetime(2005, 1, 1), datetime.today(), retry_count=10)
     except:
         print("RETRY #%d - Error reading from Yahoo Finance" % (retry))
         time.sleep(3)
@@ -59,13 +60,13 @@ for retry in range(1, 6):
 
 
 # Build DataFrame from rolling averages
-rolling_5d = pd.rolling_mean(stock['Close'], 5, min_periods=1)
-rolling_20d = pd.rolling_mean(stock['Close'], 20, min_periods=1)
-rolling_60d = pd.rolling_mean(stock['Close'], 60, min_periods=1)
-rolling_250d = pd.rolling_mean(stock['Close'], 250, min_periods=1)
+rolling_5d = pd.rolling_mean(stock['Adj Close'], 5, min_periods=1)
+rolling_20d = pd.rolling_mean(stock['Adj Close'], 20, min_periods=1)
+rolling_60d = pd.rolling_mean(stock['Adj Close'], 60, min_periods=1)
+rolling_250d = pd.rolling_mean(stock['Adj Close'], 250, min_periods=1)
 
 rolling_averages = pd.DataFrame({
-    '1D (D)': stock['Close'],
+    '1D (D)': stock['Adj Close'],
     '5D (W)': rolling_5d,
     '20D (M)': rolling_20d,
     '60D (Q)': rolling_60d,
@@ -130,9 +131,10 @@ plt.close()
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['MACD', 'Signal Line'], title='MACD & Signal Line')
 plt.axhline(y=0.0, color='k', linestyle='-')
-plt.axhline(y=-200.0, color='k', linestyle='-')
-plt.bar(x=stock.index[-250:], height=stock['MACDh_neg'][-250:], width=1, bottom=-200, color='r')
-plt.bar(x=stock.index[-250:], height=stock['MACDh_pos'][-250:], width=1, bottom=-200, color='g')
+bottom = min(stock['MACD'][-250:])*1.5
+plt.axhline(y=bottom, color='k', linestyle='-')
+plt.bar(x=stock.index[-250:], height=stock['MACDh_neg'][-250:], width=1, bottom=bottom, color='r')
+plt.bar(x=stock.index[-250:], height=stock['MACDh_pos'][-250:], width=1, bottom=bottom, color='g')
 plt.savefig('macd2.pdf', dpi=100)
 plt.close()
 
@@ -147,8 +149,8 @@ subprocess.call("pdfunite macd1.pdf macd2.pdf macd3.pdf macd.pdf", shell=True)
 # Prepare report
 formatted_date = stock.index[-1:][0].strftime("%Y-%m-%d")
 
-prev_close = stock['Close'][-2]
-last_close = stock['Close'][-1]
+prev_close = stock['Adj Close'][-2]
+last_close = stock['Adj Close'][-1]
 diff_abs = last_close-prev_close
 diff_pct = 100.0 * (last_close-prev_close) / prev_close
 
@@ -178,7 +180,7 @@ min250d = min(stock['Low'][-250:])
 max250d = max(stock['High'][-250:])
 perc250d = 100.0 * (last_close - min250d) / (max250d - min250d)
 
-streak = getStreak(stock['Close'])
+streak = getStreak(stock['Adj Close'])
 
 info = """
 ********************

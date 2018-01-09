@@ -59,8 +59,10 @@ def send_message(text, chat_id):
 def parse_all(updates):
     for update in updates["result"]:
         try:
-            if (update["message"]["text"] == "/report"):
-                subprocess.call("./stockReport", shell=True)
+            if (update["message"]["text"] == "/ibex"):
+                subprocess.call("./stockReport '^IBEX'", shell=True)
+            elif (update["message"]["text"] == "/ericsson"):
+                subprocess.call("./stockReport 'ERIC-B.ST'", shell=True)
             else:
                 text = update["message"]["text"]
                 chat = update["message"]["chat"]["id"]
