@@ -43,6 +43,11 @@ def getStreak(data):
     return ret
 
 
+# Check number of parameters
+if len(sys.argv) < 2:
+    print("Please specify the ticker to check. Ex: %s '^IBEX'" % (sys.argv[0]))
+    sys.exit(1)
+
 # Send initial message to telegram
 subprocess.call("telegram-send -- 'Collecting and analyzing data for %s...'" % (sys.argv[1]), shell=True)
 
