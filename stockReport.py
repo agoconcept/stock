@@ -130,11 +130,13 @@ stock['Buy Sell'] = (2*(np.sign(stock['Signal Line Crossover'] - stock['Signal L
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['Adj Close'], title='Close')
+plt.grid(linestyle='dotted')
 plt.savefig('macd1.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['MACD', 'Signal Line'], title='MACD & Signal Line')
+plt.grid(linestyle='dotted')
 plt.axhline(y=0.0, color='k', linestyle='-')
 bottom = min(stock['MACD'][-250:])*1.5
 plt.axhline(y=bottom, color='k', linestyle='-')
@@ -145,6 +147,7 @@ plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['Centerline Crossover', 'Buy Sell'], title='Signal Line & Centerline Crossovers', ylim=(-3,3))
+plt.grid(linestyle='dotted')
 plt.savefig('macd3.pdf', dpi=100)
 plt.close()
 
