@@ -128,6 +128,13 @@ stock['Centerline Crossover'] = np.where(stock['MACD'] > 0, 1, 0)
 stock['Centerline Crossover'] = np.where(stock['MACD'] < 0, -1, stock['Centerline Crossover'])
 stock['Buy Sell'] = (2*(np.sign(stock['Signal Line Crossover'] - stock['Signal Line Crossover'].shift(1))))
 
+
+# Calculate Force Index
+stock['force index 2'] = pd.ewma((stock['Adj Close'] - stock['Adj Close'].shift(1)) * (stock['Volume']) / 1e9, span=2)[-250:]
+stock['force index 13'] = pd.ewma((stock['Adj Close'] - stock['Adj Close'].shift(1)) * (stock['Volume']) / 1e9, span=13)[-250:]
+
+
+# Plot figures
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['Adj Close'], title='Close')
 plt.grid(linestyle='dotted')
@@ -151,7 +158,13 @@ plt.grid(linestyle='dotted')
 plt.savefig('macd3.pdf', dpi=100)
 plt.close()
 
-subprocess.call("pdfunite macd1.pdf macd2.pdf macd3.pdf macd.pdf", shell=True)
+plt.figure(figsize=(32, 24), dpi=100)
+stock[-250:].plot(y=['force index 2', 'force index 13'], title='Force index')
+plt.grid(linestyle='dotted')
+plt.savefig('macd4.pdf', dpi=100)
+plt.close()
+
+subprocess.call("pdfunite macd?.pdf macd.pdf", shell=True)
 
 
 # Prepare report
