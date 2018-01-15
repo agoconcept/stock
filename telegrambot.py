@@ -15,9 +15,12 @@ URL = "https://api.telegram.org/bot%s/" % (TOKEN)
 
 
 def get_url(url):
-    response = requests.get(url)
-    # TODO: Exception handling
-    content = response.content.decode("utf8")
+    try:
+        response = requests.get(url)
+        content = response.content.decode("utf8")
+    except:
+        content = "{}"
+
     return content
 
 
