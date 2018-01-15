@@ -129,6 +129,18 @@ stock['Centerline Crossover'] = np.where(stock['MACD'] < 0, -1, stock['Centerlin
 stock['Buy Sell'] = (2*(np.sign(stock['Signal Line Crossover'] - stock['Signal Line Crossover'].shift(1))))
 
 
+# Calculate stochastic indicator
+low = pd.rolling_min(stock['Adj Close'], 5)
+high = pd.rolling_max(stock['Adj Close'], 5)
+stock['stochastic 5'] = 100 * (stock['Adj Close'][-250:] - low) / (high - low)
+stock['stochastic 5 avg'] = pd.rolling_mean(stock['stochastic 5'], 5, min_periods=1)[-250:]
+
+low = pd.rolling_min(stock['Adj Close'], 20)
+high = pd.rolling_max(stock['Adj Close'], 20)
+stock['stochastic 20'] = 100 * (stock['Adj Close'][-250:] - low) / (high - low)
+stock['stochastic 20 avg'] = pd.rolling_mean(stock['stochastic 20'], 5, min_periods=1)[-250:]
+
+
 # Calculate Force Index
 stock['force index 2'] = pd.ewma((stock['Adj Close'] - stock['Adj Close'].shift(1)) * (stock['Volume']) / 1e9, span=2)[-250:]
 stock['force index 13'] = pd.ewma((stock['Adj Close'] - stock['Adj Close'].shift(1)) * (stock['Volume']) / 1e9, span=13)[-250:]
@@ -138,7 +150,7 @@ stock['force index 13'] = pd.ewma((stock['Adj Close'] - stock['Adj Close'].shift
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['Adj Close'], title='Close')
 plt.grid(linestyle='dotted')
-plt.savefig('macd1.pdf', dpi=100)
+plt.savefig('analysis1.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
@@ -149,22 +161,42 @@ bottom = min(stock['MACD'][-250:])*1.5
 plt.axhline(y=bottom, color='k', linestyle='-')
 plt.bar(x=stock.index[-250:], height=stock['MACDh_neg'][-250:], width=1, bottom=bottom, color='r')
 plt.bar(x=stock.index[-250:], height=stock['MACDh_pos'][-250:], width=1, bottom=bottom, color='g')
-plt.savefig('macd2.pdf', dpi=100)
+plt.savefig('analysis2.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['Centerline Crossover', 'Buy Sell'], title='Signal Line & Centerline Crossovers', ylim=(-3,3))
 plt.grid(linestyle='dotted')
-plt.savefig('macd3.pdf', dpi=100)
+plt.savefig('analysis3.pdf', dpi=100)
+plt.close()
+
+plt.figure(figsize=(32, 24), dpi=100)
+stock[-250:].plot(y=['stochastic 5 avg'], title='Stochastic 5 days', ylim=(-50,150))
+plt.grid(linestyle='dotted')
+plt.axhline(y=0.0, color='k', linestyle='-')
+plt.axhline(y=20.0, color='g', linestyle='dotted')
+plt.axhline(y=80.0, color='r', linestyle='dotted')
+plt.axhline(y=100.0, color='k', linestyle='-')
+plt.savefig('analysis4.pdf', dpi=100)
+plt.close()
+
+plt.figure(figsize=(32, 24), dpi=100)
+stock[-250:].plot(y=['stochastic 20 avg'], title='Stochastic 20 days', ylim=(-50,150))
+plt.grid(linestyle='dotted')
+plt.axhline(y=0.0, color='k', linestyle='-')
+plt.axhline(y=20.0, color='g', linestyle='dotted')
+plt.axhline(y=80.0, color='r', linestyle='dotted')
+plt.axhline(y=100.0, color='k', linestyle='-')
+plt.savefig('analysis5.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['force index 2', 'force index 13'], title='Force index')
 plt.grid(linestyle='dotted')
-plt.savefig('macd4.pdf', dpi=100)
+plt.savefig('analysis6.pdf', dpi=100)
 plt.close()
 
-subprocess.call("pdfunite macd?.pdf macd.pdf", shell=True)
+subprocess.call("pdfunite analysis?.pdf analysis.pdf", shell=True)
 
 
 # Prepare report
@@ -246,7 +278,7 @@ Volume: %.3fB
 # Send data to telegram
 subprocess.call("telegram-send -- '%s'" % (info), shell=True)
 
-subprocess.call("telegram-send -f stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf macd.pdf", shell=True)
+subprocess.call("telegram-send -f stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf analysis.pdf", shell=True)
 
 # Clean up
-subprocess.call("rm stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf macd*.pdf", shell=True)
+subprocess.call("rm stockMax.pdf stock3Y.pdf stock1Y.pdf stock1Q.pdf analysis*.pdf", shell=True)
