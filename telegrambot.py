@@ -19,7 +19,7 @@ def get_url(url):
         response = requests.get(url)
         content = response.content.decode("utf8")
     except:
-        content = "{}"
+        content = '{"result":[]}'
 
     return content
 
