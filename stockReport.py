@@ -141,9 +141,24 @@ stock['stochastic 20'] = 100 * (stock['Adj Close'][-250:] - low) / (high - low)
 stock['stochastic 20 avg'] = pd.rolling_mean(stock['stochastic 20'], 5, min_periods=1)[-250:]
 
 
+# Calculate delta
+stock['delta'] = stock['Adj Close'] - stock['Adj Close'].shift(1)
+
+
+# Calculate RSI
+stock['stock_gain'] = np.where(stock['delta'] > 0, stock['delta'], 0)
+stock['stock_loss'] = np.where(stock['delta'] < 0, -stock['delta'], 0)
+
+stock['stock_avg_gain'] = pd.rolling_mean(stock['stock_gain'], 14, min_periods=1)[-250:]
+stock['stock_avg_loss'] = pd.rolling_mean(stock['stock_loss'], 14, min_periods=1)[-250:]
+
+stock['smoothed_RS'] = pd.rolling_mean(stock['stock_avg_gain'], 14, min_periods=1) / pd.rolling_mean(stock['stock_avg_loss'], 14, min_periods=1)
+stock['RSI'] = 100 - 100 / (1+stock['smoothed_RS'])[-250:]
+
+
 # Calculate Force Index
-stock['force index 2'] = pd.ewma((stock['Adj Close'] - stock['Adj Close'].shift(1)) * (stock['Volume']) / 1e9, span=2)[-250:]
-stock['force index 13'] = pd.ewma((stock['Adj Close'] - stock['Adj Close'].shift(1)) * (stock['Volume']) / 1e9, span=13)[-250:]
+stock['force index 2'] = pd.ewma(stock['delta'] * stock['Volume'] / 1e9, span=2)[-250:]
+stock['force index 13'] = pd.ewma(stock['delta'] * stock['Volume'] / 1e9, span=13)[-250:]
 
 
 # Plot figures
@@ -191,9 +206,19 @@ plt.savefig('analysis5.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
+stock[-250:].plot(y=['RSI'], title='RSI', ylim=(-50,150))
+plt.grid(linestyle='dotted')
+plt.axhline(y=0.0, color='k', linestyle='-')
+plt.axhline(y=30.0, color='g', linestyle='dotted')
+plt.axhline(y=70.0, color='r', linestyle='dotted')
+plt.axhline(y=100.0, color='k', linestyle='-')
+plt.savefig('analysis6.pdf', dpi=100)
+plt.close()
+
+plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['force index 2', 'force index 13'], title='Force index')
 plt.grid(linestyle='dotted')
-plt.savefig('analysis6.pdf', dpi=100)
+plt.savefig('analysis7.pdf', dpi=100)
 plt.close()
 
 subprocess.call("pdfunite analysis?.pdf analysis.pdf", shell=True)
