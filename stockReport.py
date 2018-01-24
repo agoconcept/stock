@@ -165,6 +165,12 @@ stock['force index 13'] = pd.ewma(stock['delta'] * stock['Volume'] / 1e9, span=1
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['Adj Close'], title='Close')
 plt.grid(linestyle='dotted')
+bottom = min(stock['Adj Close'][-250:])
+cur = stock['Adj Close'][-1]
+top = max(stock['Adj Close'][-250:])
+plt.axhline(y=bottom, color='r', linestyle='-')
+plt.axhline(y=cur, color='k', linestyle='dotted')
+plt.axhline(y=top, color='g', linestyle='-')
 plt.savefig('analysis1.pdf', dpi=100)
 plt.close()
 
