@@ -121,6 +121,7 @@ stock['Signal Line'] = pd.ewma(stock['MACD'], span=9)
 stock['MACDh'] = stock['MACD'] - stock['Signal Line']
 stock['MACDh_pos'] = np.where(stock['MACDh'] > 0, stock['MACDh'], 0)
 stock['MACDh_neg'] = np.where(stock['MACDh'] < 0, stock['MACDh'], 0)
+stock['MACDh_delta'] = stock['MACDh'] - stock['MACDh'].shift(1)
 
 stock['Signal Line Crossover'] = np.where(stock['MACD'] > stock['Signal Line'], 1, 0)
 stock['Signal Line Crossover'] = np.where(stock['MACD'] < stock['Signal Line'], -1, stock['Signal Line Crossover'])
@@ -129,7 +130,7 @@ stock['Centerline Crossover'] = np.where(stock['MACD'] < 0, -1, stock['Centerlin
 stock['Buy Sell'] = (2*(np.sign(stock['Signal Line Crossover'] - stock['Signal Line Crossover'].shift(1))))
 
 
-# Calculate stochastic indicator
+# Calculate stochastic indicators
 low = pd.rolling_min(stock['Adj Close'], 5)
 high = pd.rolling_max(stock['Adj Close'], 5)
 stock['stochastic 5'] = 100 * (stock['Adj Close'][-250:] - low) / (high - low)
@@ -138,7 +139,12 @@ stock['stochastic 5 avg'] = pd.rolling_mean(stock['stochastic 5'], 5, min_period
 low = pd.rolling_min(stock['Adj Close'], 20)
 high = pd.rolling_max(stock['Adj Close'], 20)
 stock['stochastic 20'] = 100 * (stock['Adj Close'][-250:] - low) / (high - low)
-stock['stochastic 20 avg'] = pd.rolling_mean(stock['stochastic 20'], 5, min_periods=1)[-250:]
+stock['stochastic 20 avg'] = pd.rolling_mean(stock['stochastic 20'], 20, min_periods=1)[-250:]
+
+low = pd.rolling_min(stock['Adj Close'], 60)
+high = pd.rolling_max(stock['Adj Close'], 60)
+stock['stochastic 60'] = 100 * (stock['Adj Close'][-250:] - low) / (high - low)
+stock['stochastic 60 avg'] = pd.rolling_mean(stock['stochastic 60'], 60, min_periods=1)[-250:]
 
 
 # Calculate delta
@@ -178,10 +184,15 @@ plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['MACD', 'Signal Line'], title='MACD & Signal Line')
 plt.grid(linestyle='dotted')
 plt.axhline(y=0.0, color='k', linestyle='-')
-bottom = min(stock['MACD'][-250:])*1.5
+# Histogram
+bottom = min(stock['MACD'][-250:])*1.3
 plt.axhline(y=bottom, color='k', linestyle='-')
 plt.bar(x=stock.index[-250:], height=stock['MACDh_neg'][-250:], width=1, bottom=bottom, color='r')
 plt.bar(x=stock.index[-250:], height=stock['MACDh_pos'][-250:], width=1, bottom=bottom, color='g')
+# Histogram delta
+bottom = bottom + min(stock['MACDh'][-250:])*1.3
+plt.axhline(y=bottom, color='k', linestyle='-')
+plt.bar(x=stock.index[-250:], height=2*stock['MACDh_delta'][-250:], width=1, bottom=bottom, color='b')
 plt.savefig('analysis2.pdf', dpi=100)
 plt.close()
 
@@ -212,19 +223,29 @@ plt.savefig('analysis5.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
+stock[-250:].plot(y=['stochastic 60 avg'], title='Stochastic 60 days', ylim=(-20,120))
+plt.grid(linestyle='dotted')
+plt.axhline(y=0.0, color='k', linestyle='-')
+plt.axhline(y=20.0, color='g', linestyle='dotted')
+plt.axhline(y=80.0, color='r', linestyle='dotted')
+plt.axhline(y=100.0, color='k', linestyle='-')
+plt.savefig('analysis6.pdf', dpi=100)
+plt.close()
+
+plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['RSI'], title='RSI', ylim=(-20,120))
 plt.grid(linestyle='dotted')
 plt.axhline(y=0.0, color='k', linestyle='-')
 plt.axhline(y=30.0, color='g', linestyle='dotted')
 plt.axhline(y=70.0, color='r', linestyle='dotted')
 plt.axhline(y=100.0, color='k', linestyle='-')
-plt.savefig('analysis6.pdf', dpi=100)
+plt.savefig('analysis7.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['force index 2', 'force index 13'], title='Force index')
 plt.grid(linestyle='dotted')
-plt.savefig('analysis7.pdf', dpi=100)
+plt.savefig('analysis8.pdf', dpi=100)
 plt.close()
 
 subprocess.call("pdfunite analysis?.pdf analysis.pdf", shell=True)
