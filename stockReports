@@ -1,3 +1,5 @@
 #!/bin/bash
 stockReport.py '^IBEX'
+stockReport.py '^DJI'
+stockReport.py '^IXIC'
 stockReport.py 'ERIC-B.ST'

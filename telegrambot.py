@@ -15,18 +15,19 @@ URL = "https://api.telegram.org/bot%s/" % (TOKEN)
 
 
 def get_url(url):
-    try:
-        response = requests.get(url)
-        content = response.content.decode("utf8")
-    except:
-        content = '{"result":[]}'
-
+    response = requests.get(url)
+    content = response.content.decode("utf8")
     return content
 
 
 def get_json_from_url(url):
-    content = get_url(url)
-    js = json.loads(content)
+    try:
+        content = get_url(url)
+        js = json.loads(content)
+    except:
+        js = {u'result': []}
+    if 'result' not in js.keys():
+        js[u'result'] = []
     return js
 
 
@@ -64,6 +65,10 @@ def parse_all(updates):
         try:
             if (update["message"]["text"] == "/ibex"):
                 subprocess.call("./stockReport.py '^IBEX'", shell=True)
+            elif (update["message"]["text"] == "/dowjones"):
+                subprocess.call("./stockReport.py '^DJI'", shell=True)
+            elif (update["message"]["text"] == "/nasdaq"):
+                subprocess.call("./stockReport.py '^IXIC'", shell=True)
             elif (update["message"]["text"] == "/ericsson"):
                 subprocess.call("./stockReport.py 'ERIC-B.ST'", shell=True)
             else:

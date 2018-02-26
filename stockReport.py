@@ -52,7 +52,7 @@ if len(sys.argv) < 2:
 subprocess.call("telegram-send -- 'Collecting and analyzing data for %s...'" % (sys.argv[1]), shell=True)
 
 
-# Read IBEX data from Yahoo Finance
+# Read data from Yahoo Finance
 # NOTE! Retrying, because sometimes it fails
 for retry in range(1, 6):
     try:
