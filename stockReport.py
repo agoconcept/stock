@@ -4,8 +4,11 @@
 import matplotlib
 matplotlib.use('Agg')
 
+# TODO: Temporary hack (see https://stackoverflow.com/a/50970152)
 import pandas as pd
+pd.core.common.is_list_like = pd.api.types.is_list_like
 from pandas_datareader import DataReader
+
 from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -49,7 +52,7 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 # Send initial message to telegram
-subprocess.call("telegram-send -- 'Collecting and analyzing data for %s...'" % (sys.argv[1]), shell=True)
+subprocess.call("telegram-send --format markdown -- '*Collecting and analyzing data for %s...*'" % (sys.argv[1]), shell=True)
 
 
 # Read data from Yahoo Finance
