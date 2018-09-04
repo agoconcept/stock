@@ -1,9 +1,11 @@
+#!/bin/bash
+
 apt-get remove python-pip
 apt-get remove python3-pip
 apt-get install python3-dev
 
 easy_install3 -U pip
-pip3 install googlefinance.client
+#pip3 install googlefinance.client
 apt-get install python3-pandas
 pip3 install pandas-datareader
 
