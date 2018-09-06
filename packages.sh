@@ -6,8 +6,8 @@ apt-get install python3-dev
 
 easy_install3 -U pip
 #pip3 install googlefinance.client
+pip3 install alpha_vantage
 apt-get install python3-pandas
-pip3 install pandas-datareader
 
 apt-get install libfreetype6-dev
 apt-get install libpng12-dev
@@ -16,3 +16,7 @@ pip3 install numpy==1.14.4 --upgrade
 pip3 install matplotlib --upgrade
 
 pip3 install telegram-send
+
+# For pdfunite
+apt-get install poppler-utils
+
