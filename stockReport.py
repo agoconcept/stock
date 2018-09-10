@@ -19,13 +19,16 @@ import sys
 
 
 # Constants
-UP_CHAR = u'\u2191'
-DN_CHAR = u'\u2193'
-EQ_CHAR = u'\u2194'
+UP_CHAR = 'U' #u'\u2191'
+DN_CHAR = 'D' #u'\u2193'
+EQ_CHAR = '-' #u'\u2194'
 
 
 # Configure Alpha Vantage library
-ts = TimeSeries(key='B1R0AXKU3BPVNSO9', output_format='pandas', indexing_type='date')
+with open('token.alpha_vantage', 'r') as myfile:
+    TOKEN = myfile.read().replace('\n', '')
+
+ts = TimeSeries(key=TOKEN, output_format='pandas', indexing_type='date')
 
 
 def getTrendStr(current, average):

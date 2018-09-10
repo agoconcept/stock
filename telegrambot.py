@@ -8,7 +8,7 @@ import urllib
 import subprocess
 
 
-with open('token', 'r') as myfile:
+with open('token.telegram', 'r') as myfile:
     TOKEN = myfile.read().replace('\n', '')
 
 URL = "https://api.telegram.org/bot%s/" % (TOKEN)
