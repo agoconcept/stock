@@ -62,13 +62,13 @@ if len(sys.argv) < 2:
 subprocess.call("telegram-send --format markdown -- '*Collecting and analyzing data for %s...*'" % (sys.argv[1]), shell=True)
 
 
-# Read data from Yahoo Finance
+# Read data from Alpha Vantage
 # NOTE! Retrying, because sometimes it fails
 for retry in range(1, 6):
     try:
         stock, meta_data = ts.get_daily_adjusted(sys.argv[1], outputsize='full')
     except:
-        print("RETRY #%d - Error reading from Yahoo Finance" % (retry))
+        print("RETRY #%d - Error reading from Alpha Vantage" % (retry))
         time.sleep(3)
         continue
     break

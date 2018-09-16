@@ -9,7 +9,7 @@ Build with:
 * `docker build . -f Dockerfile.cron.hourly -t stock_hourly`
 
 Run with:
-* Background process: `docker run --restart=always --name=stock -d stock_daemon`
+* Background process: `docker run --restart=always --name=stock_daemon -d stock_daemon`
 
 Run `install.sh` to create the cronjobs in the host system, which install:
 * Daily cronjob: `docker run --rm --name=stock_daily -d stock_daily`
