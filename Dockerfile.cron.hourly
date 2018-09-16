@@ -1,0 +1,9 @@
+FROM stock_base
+
+# app
+COPY stockReport.py /usr/bin/
+COPY stockAlert /app/
+COPY token.* /root/
+COPY telegram-send.conf /root/.config/
+CMD cd /app && ./stockAlert
+

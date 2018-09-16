@@ -1,5 +1,3 @@
 #!/bin/bash
-
-cp stockReport.py /usr/bin/
-cp stockReports /etc/cron.daily/
-cp stockAlert /etc/cron.hourly/
+cp stock_cron_daily /etc/cron.daily/
+cp stock_cron_hourly /etc/cron.hourly/

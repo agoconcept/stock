@@ -1,0 +1,7 @@
+FROM stock_base
+
+# app
+COPY telegrambot.py stockReport.py token.* app/
+COPY telegram-send.conf /root/.config/
+CMD cd /app && ./telegrambot.py
+

@@ -1,0 +1,2 @@
+#!/bin/bash
+docker run --rm --name=stock_daily -d stock_daily

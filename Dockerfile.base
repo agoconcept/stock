@@ -27,8 +27,3 @@ RUN pip3 install telegram-send==0.20
 # pdfunite
 RUN apt-get install -y poppler-utils
 
-# app
-COPY telegrambot.py stockReport.py token.* app/
-COPY telegram-send.conf /root/.config/
-CMD cd /app && ./telegrambot.py
-
