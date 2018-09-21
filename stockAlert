@@ -2,13 +2,18 @@
 
 from alpha_vantage.timeseries import TimeSeries
 from datetime import datetime, date, timedelta
+from pytz import timezone
 import subprocess
 from time import sleep
 
 THRESHOLD = 0.5     # In percentage
 
+TIMEZONE = timezone('Europe/Madrid')
+
+
 # Only execute between 8:00 and 18:00
-if not datetime.now().hour in range(8, 18):
+now_utc = datetime.now(timezone('UTC'))
+if not now_utc.astimezone(TIMEZONE).hour in range(8, 19):
     exit(1)
 
 # Configure Alpha Vantage library
