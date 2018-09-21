@@ -15,3 +15,5 @@ Run `install.sh` to create the cronjobs in the host system, which install:
 * Daily cronjob: `docker run --rm --name=stock_daily -d stock_daily`
 * Hourly cronjob: `docker run --rm --name=stock_hourly -d stock_hourly`
 
+TODO:
+* Use pytz and 'Europe/Madrid' zone to check the current time
