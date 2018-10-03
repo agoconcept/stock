@@ -5,6 +5,7 @@ from datetime import datetime, date, timedelta
 from pytz import timezone
 import subprocess
 from time import sleep
+import sys
 
 THRESHOLD = 0.5     # In percentage
 
@@ -22,27 +23,28 @@ with open('token.alpha_vantage', 'r') as myfile:
 
 ts = TimeSeries(key=TOKEN, output_format='pandas', indexing_type='date')
 
-# Read data from Alpha Vantage
-# NOTE! Retrying, because sometimes it fails
-for retry in range(1, 6):
-    try:
-        stock, meta_data = ts.get_daily_adjusted(sys.argv[1], outputsize='full')
-    except:
-        print("RETRY #%d - Error reading from Alpha Vantage" % (retry))
-        sleep(3)
-        continue
-    break
+for stock_index in sys.argv[1:]:
+    # Read data from Alpha Vantage
+    # NOTE! Retrying, because sometimes it fails
+    for retry in range(1, 6):
+        try:
+            stock, meta_data = ts.get_daily_adjusted(stock_index, outputsize='full')
+        except:
+            print("RETRY #%d - Error reading from Alpha Vantage" % (retry))
+            sleep(3)
+            continue
+        break
 
 
-# Check if change is over a threshold compared to previous day
-curr_val = stock['4. close'][-1]
-prev_val = stock['4. close'][-2]
-delta = curr_val - prev_val
-perc_var = 100.0 * delta / prev_val
+    # Check if change is over a threshold compared to previous day
+    curr_val = stock['4. close'][-1]
+    prev_val = stock['4. close'][-2]
+    delta = curr_val - prev_val
+    perc_var = 100.0 * delta / prev_val
 
-if abs(perc_var) >= THRESHOLD:
+    if abs(perc_var) >= THRESHOLD:
 
-    # Send message
-    message = "!!! C: %.2f (%+.2f / %+.2f%%)" % (curr_val, delta, perc_var)
-    subprocess.call("telegram-send -- '%s'" % (message), shell=True)
+        # Send message
+        message = "!!! (%s) C: %.2f (%+.2f / %+.2f%%)" % (stock_index, curr_val, delta, perc_var)
+        subprocess.call("telegram-send -- '%s'" % (message), shell=True)
 
