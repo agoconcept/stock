@@ -14,7 +14,7 @@ TIMEZONE = timezone('Europe/Madrid')
 
 # Only execute between 8:00 and 18:00
 now_utc = datetime.now(timezone('UTC'))
-if now_utc.astimezone(TIMEZONE).hour not in range(8, 19) or \
+if now_utc.astimezone(TIMEZONE).hour not in range(10, 18) or \
     now_utc.astimezone(TIMEZONE).weekday() not in range(0, 5):
     exit(1)
 
