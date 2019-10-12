@@ -1,6 +1,8 @@
 # stock
 
-Follow instructions at [https://pypi.org/project/telegram-send/]
+There's no need to setup telegram-send, as it is already configured in the docker
+images. Anyway, the instructions if needed are available at
+[https://pypi.org/project/telegram-send/]
 
 Build with:
 * `docker build . -f Dockerfile.base -t stock_base`
