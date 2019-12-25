@@ -2,4 +2,5 @@
 stockReport.py '^IBEX'
 stockReport.py '^DJI'
 stockReport.py 'NASDAQ:^IXIC'
-stockReport.py 'ERIC'
+stockReport.py 'STO:ERIC-B'
+stockReport.py 'HLZ.MC'

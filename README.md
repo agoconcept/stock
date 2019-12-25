@@ -10,6 +10,8 @@ Build with `./build.sh`, which executes:
 * `docker build . -f Dockerfile.cron.daily -t stock_daily`
 * `docker build . -f Dockerfile.cron.hourly -t stock_hourly`
 
+**NOTE!!!** It may be needed to avoid the Docker cache by adding the `--no-cache` parameter to `docker build`
+
 Run `sudo ./install.sh` to create the cronjobs in the host system, which install:
 * Daily cronjob: `docker run --rm --name=stock_daily -d stock_daily`
 * Hourly cronjob: `docker run --rm --name=stock_hourly -d stock_hourly`

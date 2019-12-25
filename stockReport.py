@@ -66,9 +66,10 @@ subprocess.call("telegram-send --format markdown -- '*Collecting and analyzing d
 # NOTE! Retrying, because sometimes it fails
 for retry in range(1, 6):
     try:
-        stock, meta_data = ts.get_daily_adjusted(sys.argv[1], outputsize='full')
+        print("TRY #%d - Reading symbol '%s' from Alpha Vantage" % (retry, sys.argv[1]))
+        stock, meta_data = ts.get_daily_adjusted(sys.argv[1])
     except:
-        print("RETRY #%d - Error reading from Alpha Vantage" % (retry))
+        print("FAIL #%d - Error reading from Alpha Vantage" % (retry))
         time.sleep(3)
         continue
     break
@@ -156,11 +157,6 @@ high = stock['4. close'].rolling(20).max()
 stock['stochastic 20'] = 100 * (stock['4. close'][-250:] - low) / (high - low)
 stock['stochastic 20 avg'] = stock['stochastic 20'].rolling(20).mean()[-250:]
 
-low = stock['4. close'].rolling(60).min()
-high = stock['4. close'].rolling(60).max()
-stock['stochastic 60'] = 100 * (stock['4. close'][-250:] - low) / (high - low)
-stock['stochastic 60 avg'] = stock['stochastic 60'].rolling(60).mean()[-250:]
-
 
 # Calculate delta
 stock['delta'] = stock['4. close'] - stock['4. close'].shift(1)
@@ -238,29 +234,19 @@ plt.savefig('analysis5.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
-stock[-250:].plot(y=['stochastic 60 avg'], title='Stochastic 60 days', ylim=(-20,120))
-plt.grid(linestyle='dotted')
-plt.axhline(y=0.0, color='k', linestyle='-')
-plt.axhline(y=20.0, color='g', linestyle='dotted')
-plt.axhline(y=80.0, color='r', linestyle='dotted')
-plt.axhline(y=100.0, color='k', linestyle='-')
-plt.savefig('analysis6.pdf', dpi=100)
-plt.close()
-
-plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['RSI'], title='RSI', ylim=(-20,120))
 plt.grid(linestyle='dotted')
 plt.axhline(y=0.0, color='k', linestyle='-')
 plt.axhline(y=30.0, color='g', linestyle='dotted')
 plt.axhline(y=70.0, color='r', linestyle='dotted')
 plt.axhline(y=100.0, color='k', linestyle='-')
-plt.savefig('analysis7.pdf', dpi=100)
+plt.savefig('analysis6.pdf', dpi=100)
 plt.close()
 
 plt.figure(figsize=(32, 24), dpi=100)
 stock[-250:].plot(y=['force index 2', 'force index 13'], title='Force index')
 plt.grid(linestyle='dotted')
-plt.savefig('analysis8.pdf', dpi=100)
+plt.savefig('analysis7.pdf', dpi=100)
 plt.close()
 
 subprocess.call("pdfunite analysis?.pdf analysis.pdf", shell=True)

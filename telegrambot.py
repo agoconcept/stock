@@ -70,7 +70,9 @@ def parse_all(updates):
             elif (update["message"]["text"] == "/nasdaq"):
                 subprocess.call("./stockReport.py 'NASDAQ:^IXIC'", shell=True)
             elif (update["message"]["text"] == "/ericsson"):
-                subprocess.call("./stockReport.py 'ERIC'", shell=True)
+                subprocess.call("./stockReport.py 'STO:ERIC-B'", shell=True)
+            elif (update["message"]["text"] == "/holaluz"):
+                subprocess.call("./stockReport.py 'HLZ.MC'", shell=True)
             else:
                 text = update["message"]["text"]
                 chat = update["message"]["chat"]["id"]
