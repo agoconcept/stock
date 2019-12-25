@@ -19,3 +19,11 @@ Run `sudo ./install.sh` to create the cronjobs in the host system, which install
 Run with `./run.sh`, which stops previous containers and runs:
 * Background process: `docker run --restart=unless-stopped --name=stock_daemon -d stock_daemon`
 
+Telegram commands:
+```
+ibex - Send ^IBEX report
+dowjones - Send ^DJI report
+nasdaq - Send NASDAQ:^IXIC report
+ericsson - Send STO:ERIC-B report
+holaluz - Send HLZ.MC report
+```
