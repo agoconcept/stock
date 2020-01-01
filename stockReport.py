@@ -64,15 +64,23 @@ subprocess.call("telegram-send --format markdown -- '*Collecting and analyzing d
 
 # Read data from Alpha Vantage
 # NOTE! Retrying, because sometimes it fails
-for retry in range(1, 6):
+retry = 0
+while retry < 5:
     try:
         print("TRY #%d - Reading symbol '%s' from Alpha Vantage" % (retry, sys.argv[1]))
         stock, meta_data = ts.get_daily_adjusted(sys.argv[1])
     except:
+        retry += 1
         print("FAIL #%d - Error reading from Alpha Vantage" % (retry))
         time.sleep(3)
         continue
     break
+
+if retry == 5:
+    msg = "Unable to read data for symbol '%s' from Alpha Vantage, aborting" % (sys.argv[1])
+    print(msg)
+    subprocess.call("telegram-send --format markdown -- '%s'" % (msg), shell=True)
+    sys.exit(1)
 
 
 # Build DataFrame from rolling averages
