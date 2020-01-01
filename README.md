@@ -27,3 +27,12 @@ nasdaq - Send NASDAQ:^IXIC report
 ericsson - Send STO:ERIC-B report
 holaluz - Send HLZ.MC report
 ```
+
+## Query test for a stock
+You can easily test query a stock with the following commands:
+```
+SYMBOL=
+TOKEN=$(cat token.alpha_vantage)
+curl "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${SYMBOL}&apikey=${TOKEN}"
+```
+
