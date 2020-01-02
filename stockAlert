@@ -14,7 +14,7 @@ TIMEZONE = timezone('Europe/Madrid')
 
 # Only execute between 8:00 and 18:00
 now_utc = datetime.now(timezone('UTC'))
-if now_utc.astimezone(TIMEZONE).hour not in range(10, 18) or \
+if now_utc.astimezone(TIMEZONE).hour not in range(9, 18) or \
     now_utc.astimezone(TIMEZONE).weekday() not in range(0, 5):
     exit(1)
 
@@ -32,7 +32,7 @@ for stock_index in sys.argv[1:]:
         try:
             stock = meta_data = None
             print("TRY #%d - Reading symbol '%s' from Alpha Vantage" % (retry, stock_index))
-            stock, meta_data = ts.get_daily_adjusted(stock_index)
+            stock, meta_data = ts.get_quote_endpoint(stock_index)
         except:
             print("FAIL #%d - Error reading from Alpha Vantage" % (retry))
             retry += 1
@@ -47,8 +47,8 @@ for stock_index in sys.argv[1:]:
         continue
 
     # Check if change is over a threshold compared to previous day
-    curr_val = stock['4. close'][-1]
-    prev_val = stock['4. close'][-2]
+    curr_val = float(stock['05. price']['Global Quote'])
+    prev_val = float(stock['08. previous close']['Global Quote'])
     delta = curr_val - prev_val
     perc_var = 100.0 * delta / prev_val
 
