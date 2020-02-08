@@ -21,13 +21,17 @@ Run with `./run.sh`, which stops previous containers and runs:
 
 ## Telegram commands
 
+* Send `/setcommands` to @BotFather
+* Select `@santibexbot` to set the commands for this bot
+* Send the following list of commands:
 ```
 ibex - Send ^IBEX report
+ericsson - Send STO:ERIC-B report
+df - Send MDF.MC report
 dowjones - Send ^DJI report
 nasdaq - Send NASDAQ:^IXIC report
-ericsson - Send STO:ERIC-B report
-holaluz - Send HLZ.MC report
 ```
+* Enjoy :)
 
 ## Query test for a stock
 You can easily test query a stock with the following commands:
