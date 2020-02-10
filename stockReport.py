@@ -308,21 +308,21 @@ info = """
 ********************
 ANALYSIS: %s
 ********************
-Current: %.2f
-Diff: %+.2f (%+.2f%%)
-Pre: %.2f - Op: %.2f
-Range: %.2f - %.2f
+Current: %.4f
+Diff: %+.4f (%+.4f%%)
+Pre: %.4f - Op: %.4f
+Range: %.4f - %.4f
 Volume: %.3fB
 ---
-5d avg: %.2f (%s)
-20d avg: %.2f (%s)
-60d avg: %.2f (%s)
-250d avg: %.2f (%s)
+5d avg: %.4f (%s)
+20d avg: %.4f (%s)
+60d avg: %.4f (%s)
+250d avg: %.4f (%s)
 ---
-5d range: %.2f - %.2f (%.2f%%)
-20d range: %.2f - %.2f (%.2f%%)
-60d range: %.2f - %.2f (%.2f%%)
-250d range: %.2f - %.2f (%.2f%%)
+5d range: %.4f - %.4f (%.4f%%)
+20d range: %.4f - %.4f (%.4f%%)
+60d range: %.4f - %.4f (%.4f%%)
+250d range: %.4f - %.4f (%.4f%%)
 ---
 10 day streak: %s
 """ % (

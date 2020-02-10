@@ -55,6 +55,6 @@ for stock_index in sys.argv[1:]:
     if abs(perc_var) >= THRESHOLD:
 
         # Send message
-        message = "!!! (%s) C: %.2f (%+.2f / %+.2f%%)" % (stock_index, curr_val, delta, perc_var)
+        message = "!!! (%s) C: %.4f (%+.4f / %+.4f%%)" % (stock_index, curr_val, delta, perc_var)
         subprocess.call("telegram-send -- '%s'" % (message), shell=True)
 
