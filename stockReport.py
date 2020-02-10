@@ -309,7 +309,7 @@ info = """
 ANALYSIS: %s
 ********************
 Current: %.4f
-Diff: %+.4f (%+.4f%%)
+Diff: %+.4f (%+.2f%%)
 Pre: %.4f - Op: %.4f
 Range: %.4f - %.4f
 Volume: %.3fB
@@ -319,10 +319,10 @@ Volume: %.3fB
 60d avg: %.4f (%s)
 250d avg: %.4f (%s)
 ---
-5d range: %.4f - %.4f (%.4f%%)
-20d range: %.4f - %.4f (%.4f%%)
-60d range: %.4f - %.4f (%.4f%%)
-250d range: %.4f - %.4f (%.4f%%)
+5d range: %.4f - %.4f (%.2f%%)
+20d range: %.4f - %.4f (%.2f%%)
+60d range: %.4f - %.4f (%.2f%%)
+250d range: %.4f - %.4f (%.2f%%)
 ---
 10 day streak: %s
 """ % (
