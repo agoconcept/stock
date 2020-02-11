@@ -28,6 +28,7 @@ Run with `./run.sh`, which stops previous containers and runs:
 ibex - Send ^IBEX report
 ericsson - Send STO:ERIC-B report
 df - Send MDF.MC report
+tef - Send TEF.MC report
 dowjones - Send ^DJI report
 nasdaq - Send NASDAQ:^IXIC report
 ```

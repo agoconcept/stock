@@ -73,6 +73,8 @@ def parse_all(updates):
                 subprocess.call("./stockReport.py 'STO:ERIC-B'", shell=True)
             elif (update["message"]["text"] == "/df"):
                 subprocess.call("./stockReport.py 'MDF.MC'", shell=True)
+            elif (update["message"]["text"] == "/tef"):
+                subprocess.call("./stockReport.py 'TEF.MC'", shell=True)
             else:
                 text = update["message"]["text"]
                 chat = update["message"]["chat"]["id"]
