@@ -7,7 +7,8 @@ matplotlib.use('Agg')
 # TODO: Temporary hack (see https://stackoverflow.com/a/50970152)
 import pandas as pd
 pd.core.common.is_list_like = pd.api.types.is_list_like
-from alpha_vantage.timeseries import TimeSeries
+
+import requests
 
 from datetime import datetime
 import matplotlib.pyplot as plt
@@ -27,8 +28,6 @@ EQ_CHAR = '-' #u'\u2194'
 # Configure Alpha Vantage library
 with open('token.alpha_vantage', 'r') as myfile:
     TOKEN = myfile.read().replace('\n', '')
-
-ts = TimeSeries(key=TOKEN, output_format='pandas', indexing_type='date')
 
 
 def getTrendStr(current, average):
@@ -68,7 +67,31 @@ retry = 0
 while retry < 5:
     try:
         print("TRY #%d - Reading symbol '%s' from Alpha Vantage" % (retry, sys.argv[1]))
-        stock, meta_data = ts.get_daily_adjusted(sys.argv[1])
+
+        # This was for the former API, kept here just as a temporary reference
+        #ts = TimeSeries(key=TOKEN, output_format='pandas', indexing_type='date')
+        #stock, meta_data = ts.get_daily(sys.argv[1])
+
+        base_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=full'
+        url = base_url + '&symbol={symbol}&apikey={token}'
+        formatted_url = url.format(symbol=sys.argv[1], token=TOKEN)
+        r = requests.get(formatted_url)
+
+        data = r.json()
+
+        stock_json = data['Time Series (Daily)']
+        metadata_json = data['Meta Data']
+
+        # Use pandas.DataFrame.from_dict() to Convert JSON to DataFrame
+        stock = pd.DataFrame.from_dict(stock_json, orient="index")
+
+        # Convert data to float
+        stock['1. open'] = stock['1. open'].astype(float)
+        stock['2. high'] = stock['2. high'].astype(float)
+        stock['3. low'] = stock['3. low'].astype(float)
+        stock['4. close'] = stock['4. close'].astype(float)
+        stock['5. volume'] = stock['5. volume'].astype(float)
+
     except:
         print("FAIL #%d - Error reading from Alpha Vantage" % (retry))
         retry += 1
@@ -87,7 +110,7 @@ stock_open =  stock['1. open'][stock['4. close'] > 0.0]
 stock_high =  stock['2. high'][stock['4. close'] > 0.0]
 stock_low =  stock['3. low'][stock['4. close'] > 0.0]
 stock_close =  stock['4. close'][stock['4. close'] > 0.0]
-stock_volume =  stock['6. volume'][stock['4. close'] > 0.0]
+stock_volume =  stock['5. volume'][stock['4. close'] > 0.0]
 
 stock['filtered close'] = stock_close
 
