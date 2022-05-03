@@ -26,11 +26,10 @@ Run with `./run.sh`, which stops previous containers and runs:
 * Send the following list of commands:
 ```
 ibex - Send ^IBEX report
-ericsson - Send STO:ERIC-B report
-df - Send MDF.MC report
-tef - Send TEF.MC report
+tef - Send TEF report
+ericsson - Send ERIC report
+nasdaq - Send ^IXIC report
 dowjones - Send ^DJI report
-nasdaq - Send NASDAQ:^IXIC report
 ```
 * Enjoy :)
 

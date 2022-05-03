@@ -5,5 +5,5 @@ COPY stockReport.py /usr/bin/
 COPY stockAlert /app/
 COPY token.* /app/
 COPY telegram-send.conf /root/.config/
-CMD cd /app && ./stockAlert '^IBEX' 'STO:ERIC-B' 'MDF.MC' 'TEF.MC'
+CMD cd /app && ./stockAlert '^IBEX' 'TEF' 'ERIC'
 

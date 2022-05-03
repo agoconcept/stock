@@ -1,7 +1,6 @@
 #!/bin/bash
 stockReport.py '^IBEX'
+stockReport.py 'TEF'
+stockReport.py 'ERIC'
+stockReport.py '^IXIC'
 stockReport.py '^DJI'
-stockReport.py 'NASDAQ:^IXIC'
-stockReport.py 'STO:ERIC-B'
-stockReport.py 'MDF.MC'
-stockReport.py 'TEF.MC'
