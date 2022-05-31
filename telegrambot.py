@@ -65,10 +65,12 @@ def parse_all(updates):
         try:
             if (update["message"]["text"] == "/ibex"):
                 subprocess.call("./stockReport.py '^IBEX'", shell=True)
-            elif (update["message"]["text"] == "/tef"):
-                subprocess.call("./stockReport.py 'TEF'", shell=True)
+            elif (update["message"]["text"] == "/bynd"):
+                subprocess.call("./stockReport.py 'BYND'", shell=True)
             elif (update["message"]["text"] == "/ericsson"):
                 subprocess.call("./stockReport.py 'ERIC'", shell=True)
+            elif (update["message"]["text"] == "/tef"):
+                subprocess.call("./stockReport.py 'TEF'", shell=True)
             elif (update["message"]["text"] == "/nasdaq"):
                 subprocess.call("./stockReport.py '^IXIC'", shell=True)
             elif (update["message"]["text"] == "/dowjones"):
