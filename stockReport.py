@@ -72,7 +72,7 @@ while retry < 5:
         #ts = TimeSeries(key=TOKEN, output_format='pandas', indexing_type='date')
         #stock, meta_data = ts.get_daily(sys.argv[1])
 
-        base_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=full'
+        base_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&outputsize=full'
         url = base_url + '&symbol={symbol}&apikey={token}'
         formatted_url = url.format(symbol=sys.argv[1], token=TOKEN)
         r = requests.get(formatted_url)
